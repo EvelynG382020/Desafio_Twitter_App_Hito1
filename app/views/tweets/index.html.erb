@@ -1,0 +1,71 @@
+
+<% if signed_in? %>
+  <%= render 'form', tweet: @tweet %>
+<% end %>
+
+  <!--ME GUÍO DEL SCOPE PARA LOS ATRIBUTOS
+        <th scope="col">User Name</th>
+        <th scope="col">Content</th>
+        <th scope="col">Photo</th>
+        <th scope="col">Rt Reference</th>
+        <th scope="col">Retweets</th>
+        <th scope="col">Like</th>
+        <th scope="col">Creation Time</th>-->
+
+<div class="container">    
+<% @tweets.each do |tweet| %>
+  <div class="card mt-1 mb-4 col-md-6 mx-auto">
+    <div class="col-md-12">
+      <div class="card-body">
+        <h4 class="card-title"><%= tweet.user.user_name %></h4>
+        <h4 class="card-title"><%= tweet.content %></h4>
+        <img src="<%= tweet.user&.user_photo %>" width="60" height="60" class="rounded-circle mb-2" >
+        <div class="col-md-8">
+          <div class="card-body">
+            <%#= tweet.rt_ref %>
+            <%#= tweet.retweet %>
+            <%#= tweet.likes.count %> 
+            <p class="card-text">
+              <% if signed_in? %>
+                <% if like(tweet, current_user) %>
+                  <%= link_to tweet_like_path(tweet,like(tweet, current_user)), method: :delete do %>
+                    <i class="fas fa-thumbs-up fa-sm"></i>
+                  <% end %>
+                <% else  %>
+                  <%= link_to tweet_likes_path(tweet), method: :post do %>
+                    <i class="far fa-thumbs-up fa-sm"></i>
+                  <% end %>
+                <% end %>
+                | <%= tweet.likes.count %> <%= (tweet.likes.count) == 1 ? 'Like' : 'Likes'%> |
+                <%= link_to retweet_tweet_path(tweet), data: { confirm: 'do you want to retweet'}, method: :post do %>
+                  <i class="fas fa-retweet fa-sm"></i>
+                <% end %>
+                  |<%= tweet.retweet %> RT
+                <% else %>
+                  <%= tweet.likes.count %> <%= (tweet.likes.count) == 1 ? 'Like' : 'Likes'%> | <%= tweet.retweet %> RT
+              <% end %>
+            </p>  
+            <p class="card-text">
+              <small class="text-muted">
+                <%= link_to time_ago_in_words(tweet.created_at),tweet %> |
+                <% if !tweet.rt_ref.nil? %>
+                  <%= link_to "#{tweet.user.user_name} ha retweet...", tweet.retweet_ref  %></td>
+                <% end %>
+                <% if signed_in? && tweet.user == current_user %>
+                    <%= link_to 'Destroy', tweet, method: :delete, data: { confirm: 'Are you sure?' }, class: "badge bg-primary" %>
+                <% end %>
+              </small>
+            </p>
+            <%= link_to 'Show', tweet %></td> |
+            <%= link_to 'Edit', edit_tweet_path(tweet) %></td> |
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %> 
+  <div class="pagination justify-content-center">
+    <%= link_to_next_page @tweets, 'Show More Tweets' %>
+    <%= link_to_prev_page @tweets, 'Show Previous Tweets' %>
+  </div>  
+</div>

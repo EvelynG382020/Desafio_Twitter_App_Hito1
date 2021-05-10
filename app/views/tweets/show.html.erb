@@ -1,0 +1,29 @@
+<div class="container">
+<p  id="notice"><%= notice %></p>
+<p>
+<strong>Photo:</strong>
+<img src="<%= @tweet.user.user_photo %>"'width="60" height="60" class="rounded-circle mb-2">
+</p>
+
+<p>
+<strong>Name:</strong>
+<%= @tweet.user.user_name %>
+</p>
+
+<p>
+<strong>Content:</strong>
+<%= @tweet.content %>
+</p>
+
+
+<p>
+<strong>Likes:</strong>
+    <%@tweet.likes.each do |like| %>
+        <ul style="list-style-type:none" >
+            <img src="<%= like.user.user_photo %>" class="img-thumbnail rounded-circle" style="max-width: 130px;">
+        </ul>        
+    <% end %>
+</p>
+<%= link_to 'Edit', edit_tweet_path(@tweet) %> |
+<%= link_to 'Back', tweets_path %>
+</div>

@@ -1,0 +1,27 @@
+<div class="container">
+  <h1 class="text-primary">Tweets</h1>
+
+<%= form_with(model: tweet, local: true) do |form| %>
+  <% if tweet.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(tweet.errors.count, "error") %> prohibited this tweet from being saved:</h2>
+
+      <ul>
+      <% tweet.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="card text-center mx-auto col-md-6 mb-3">
+    <h3 class="card-title py-3">Created New Tweet</h3>
+    <div class="form-group">
+        <%= form.text_area(:content, rows: 3, class: 'col-md-7') %>
+    </div>
+    <div class="actions my-2">
+      <%= form.submit "Created New Tweet", :class => 'btn btn-primary' %>
+    </div>
+  </div>
+<% end %>
+</div>
