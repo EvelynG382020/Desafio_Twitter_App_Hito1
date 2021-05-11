@@ -26,32 +26,36 @@
             <%#= tweet.retweet %>
             <%#= tweet.likes.count %> 
             <p class="card-text">
-              <% if signed_in? %>
-                <% if like(tweet, current_user) %>
+              <% if signed_in? %> <!--se ha iniciado sesión-->
+                <% if like(tweet, current_user) %> <!--y si el like del ususario actual del tweet-->
                   <%= link_to tweet_like_path(tweet,like(tweet, current_user)), method: :delete do %>
-                    <i class="fas fa-thumbs-up fa-sm"></i>
+                    <i class="fas fa-thumbs-up fa-sm"></i> <!--se elimina porque este usuario no puede hacer like en el mismo tweet-->
                   <% end %>
-                <% else  %>
-                  <%= link_to tweet_likes_path(tweet), method: :post do %>
-                    <i class="far fa-thumbs-up fa-sm"></i>
+                <% else  %> <!--sino-->
+                  <%= link_to tweet_likes_path(tweet), method: :post do %> <!--crear el like se busca la ruta-->
+                    <i class="far fa-thumbs-up fa-sm"></i> <!--mostarlo con un icono-->
                   <% end %>
                 <% end %>
+                  <!--se cuentan los like usando un count sobre la tabla like del tweet-->
                 | <%= tweet.likes.count %> <%= (tweet.likes.count) == 1 ? 'Like' : 'Likes'%> |
+                  <!--se crea un retweet se busca la ruta y le paso el objeto-->
                 <%= link_to retweet_tweet_path(tweet), data: { confirm: 'do you want to retweet'}, method: :post do %>
                   <i class="fas fa-retweet fa-sm"></i>
                 <% end %>
+                  <!--se muestra el rt del tweet-->
                   |<%= tweet.retweet %> RT
                 <% else %>
                   <%= tweet.likes.count %> <%= (tweet.likes.count) == 1 ? 'Like' : 'Likes'%> | <%= tweet.retweet %> RT
               <% end %>
             </p>  
             <p class="card-text">
-              <small class="text-muted">
+              <small class="text-muted"> <!--un link para mostrar la fecha transcurrido del tweet creado-->
                 <%= link_to time_ago_in_words(tweet.created_at),tweet %> |
-                <% if !tweet.rt_ref.nil? %>
+                <% if !tweet.rt_ref.nil? %> <!--si el campo rt_ref del tweet es nulo-->
+                  <!--se crea un link donde se interpola el nombre de usuario del usario del tweet para indicar que ha retweet y le paso el metodo al tweet-->
                   <%= link_to "#{tweet.user.user_name} ha retweet...", tweet.retweet_ref  %></td>
                 <% end %>
-                <% if signed_in? && tweet.user == current_user %>
+                <% if signed_in? && tweet.user == current_user %> <!--y si ha iniciado sesión el usuario del tweet que es igual al usuario actual se elimina-->
                     <%= link_to 'Destroy', tweet, method: :delete, data: { confirm: 'Are you sure?' }, class: "badge bg-primary" %>
                 <% end %>
               </small>
