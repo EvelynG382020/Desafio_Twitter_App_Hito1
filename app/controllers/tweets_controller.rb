@@ -5,6 +5,15 @@ class TweetsController < ApplicationController
   def index
     @tweet = Tweet.new
     @tweets = Tweet.all.order("created_at DESC").page(params[:page])
+    
+    if params[:q]
+      @tweets = Tweet.where("content LIKE ?", "%#{params[:q]}%").order(created_at: :desc).page(params[:page])
+      elsif current_user.nil?
+        @tweets = Tweet.order(created_at: :desc).page(params[:page])
+      else
+      @tweets = Tweet.tweets_for_me(current_user.friends).or(Tweet.where("user_id = ?", current_user.id)).order(created_at: :desc).page(params[:page])
+    end
+
   end
 
   # GET /tweets/1 or /tweets/1.json
