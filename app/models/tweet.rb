@@ -8,12 +8,11 @@ class Tweet < ApplicationRecord
         Tweet.find(self.rt_ref)
     end
 
-    def get_user_name
-        self.user.user_name
-    end
 
-    def get_user_photo
-        self.user.user_photo 
-    end
+    scope :tweets_for_me, ->(users_list) { where(
+        user_id: users_list.map do |friend|
+            friend.friend_id 
+        end
+    ) }
 
 end
