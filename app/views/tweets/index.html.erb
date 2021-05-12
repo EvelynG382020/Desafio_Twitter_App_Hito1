@@ -10,7 +10,8 @@
         <th scope="col">Rt Reference</th>
         <th scope="col">Retweets</th>
         <th scope="col">Like</th>
-        <th scope="col">Creation Time</th>-->
+        <th scope="col">Creation Time</th>
+        <th scope="col">tweets_for_me</th>-->
 
 <div class="container">    
 <% @tweets.each do |tweet| %>
@@ -24,7 +25,9 @@
           <div class="card-body">
             <%#= tweet.rt_ref %>
             <%#= tweet.retweet %>
-            <%#= tweet.likes.count %> 
+            <%#= tweet.likes.count %>
+            <%#= tweet.likes.count %>
+            <%#= tweet.tweets_for_me %> 
             <p class="card-text">
               <% if signed_in? %> <!--se ha iniciado sesión-->
                 <% if like(tweet, current_user) %> <!--y si el like del ususario actual del tweet-->
