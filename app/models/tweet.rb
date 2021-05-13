@@ -4,6 +4,7 @@ class Tweet < ApplicationRecord
     validates :content, presence: true
     paginates_per 50
     #se define un metodo que guarda el campo del rt_ref encontrado del tweet
+    
     def retweet_ref
         Tweet.find(self.rt_ref)
     end

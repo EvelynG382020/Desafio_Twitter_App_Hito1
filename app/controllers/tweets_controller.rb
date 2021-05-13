@@ -4,15 +4,18 @@ class TweetsController < ApplicationController
   # GET /tweets or /tweets.json
   def index
     @tweet = Tweet.new
-    @tweets = Tweet.all.order("created_at DESC").page(params[:page])
+    @tweets = Tweet.all
+    @q = Tweet.ransack(params[:q]) #los resultados serán procesados por ransack
+    @tweets = @q.result(distinct: true).order("created_at DESC").page(params[:page])
+    #con distinct: true elimina duplicados
     
-    if params[:q]
-      @tweets = Tweet.where("content LIKE ?", "%#{params[:q]}%").order(created_at: :desc).page(params[:page])
-      elsif current_user.nil?
-        @tweets = Tweet.order(created_at: :desc).page(params[:page])
-      else
-      @tweets = Tweet.tweets_for_me(current_user.friends).or(Tweet.where("user_id = ?", current_user.id)).order(created_at: :desc).page(params[:page])
-    end
+    # if params[:q]
+    #   @tweets = Tweet.where("content LIKE ?", "%#{params[:q]}%").order(created_at: :desc).page(params[:page])
+    #   elsif current_user.nil?
+    #     @tweets = Tweet.order(created_at: :desc).page(params[:page])
+    #   else
+    #   @tweets = Tweet.tweets_for_me(current_user.friends).or(Tweet.where("user_id = ?", current_user.id)).order(created_at: :desc).page(params[:page])
+    # end
 
   end
 

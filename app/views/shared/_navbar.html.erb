@@ -11,12 +11,18 @@
             <li><%= button_to 'Registrarse', new_user_registration_path, method: :get, :class => 'btn btn-primary mx-4' %></li>
         <% end %>
     </ul>
-        <form class="form-inline">
-        <div class="d-inline-block">
-            <input class="form-control" type="search" placeholder="Search" aria-label="Buscar" name="tweetsearch">
-        </div>
-        <div class="d-inline-block">
-        <button class="btn btn-outline-light" type="submit">Search</button>
-        </div>
-    </form>
+    
+    <div class="col-md-3 offset-md-2">
+        <%= search_form_for @q do |f| %> 
+        <div class="form-group">
+            <%= f.label :content_cont %>
+            <%= f.search_field :content_cont, class: "form-control", placeholder: "Search" %>
+            <%= f.submit "Search", class: "btn btn-primary" %> 
+        <% end %>
+        </div>    
+    </div>   
 </nav>
+
+
+   
+   
