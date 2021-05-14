@@ -4,6 +4,6 @@ module ApplicationHelper
     end
 
     # def pre_follow
-    #     current_user.friends.find { |friend| friend.friend_id == tweet.user.id }
+    #    current_user.friends.find { |friend| friend.friend_id == tweet.user.id }
     # end
 end

@@ -11,16 +11,18 @@
             <li><%= button_to 'Registrarse', new_user_registration_path, method: :get, :class => 'btn btn-primary mx-4' %></li>
         <% end %>
     </ul>
+
+    <% if user_signed_in?  %>
+        <div class="container mx-auto">
+            <b><p class="text-white" >Bienvenido(a) <%= current_user.user_name %> <img src="<%= current_user.user_photo %>" width="40" height="40" class="rounded-circle mb-2" ></p></b>
+        </div>
+    <%end%>
+    <br>
+       
+</div>
     
-    <div class="col-md-3 offset-md-2">
-        <%= search_form_for @q do |f| %> 
-        <div class="form-group">
-            <%= f.label :content_cont %>
-            <%= f.search_field :content_cont, class: "form-control", placeholder: "Search" %>
-            <%= f.submit "Search", class: "btn btn-primary" %> 
-        <% end %>
-        </div>    
-    </div>   
+
+       
 </nav>
 
 

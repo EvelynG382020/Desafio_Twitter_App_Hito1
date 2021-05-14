@@ -4,19 +4,10 @@ class TweetsController < ApplicationController
   # GET /tweets or /tweets.json
   def index
     @tweet = Tweet.new
-    @tweets = Tweet.all
     @q = Tweet.ransack(params[:q]) #los resultados serán procesados por ransack
     @tweets = @q.result(distinct: true).order("created_at DESC").page(params[:page])
     #con distinct: true elimina duplicados
-    
-    # if params[:q]
-    #   @tweets = Tweet.where("content LIKE ?", "%#{params[:q]}%").order(created_at: :desc).page(params[:page])
-    #   elsif current_user.nil?
-    #     @tweets = Tweet.order(created_at: :desc).page(params[:page])
-    #   else
-    #   @tweets = Tweet.tweets_for_me(current_user.friends).or(Tweet.where("user_id = ?", current_user.id)).order(created_at: :desc).page(params[:page])
-    # end
-
+  
   end
 
   # GET /tweets/1 or /tweets/1.json
@@ -27,6 +18,7 @@ class TweetsController < ApplicationController
   # GET /tweets/new
   def new
     @tweet = Tweet.new
+    @tweet = current_user.tweets.build
   end
 
   # GET /tweets/1/edit
@@ -36,6 +28,7 @@ class TweetsController < ApplicationController
   # POST /tweets or /tweets.json
   def create
     @tweet = Tweet.new(tweet_params.merge(user: current_user))
+    @tweet = current_user.tweets.build(tweet_params)
 
     respond_to do |format|
       if @tweet.save
@@ -71,7 +64,7 @@ class TweetsController < ApplicationController
   end
 
   def retweet
-    redirect_to root_path, alert: 'no es posible hacer retweet' and return if @tweet.user == current_user
+    redirect_to root_path, alert: 'No es posible hacer retweet' and return if @tweet.user == current_user
     retweeted = Tweet.new(content: @tweet.content)
     retweeted.user = current_user
     retweeted.rt_ref = @tweet.id
@@ -85,6 +78,13 @@ class TweetsController < ApplicationController
       else
         redirect_to root_path, alert: "Unable to retweet."
     end
+  end
+
+  def follower 
+    @tweet = Tweet.find(params[:tweet_id])
+    @friend = Friend.create(user_id: current_user.id, friend_id: params[:user_id])
+    Friend.create(user_id: current_user.id, friend_id: @tweet.user_id)
+    redirect_to root_path, notice: "Ahora sigues a #{@tweet.user.user_name}"
   end
 
   private
