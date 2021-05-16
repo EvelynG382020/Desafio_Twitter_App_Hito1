@@ -3,11 +3,23 @@ class TweetsController < ApplicationController
 
   # GET /tweets or /tweets.json
   def index
+    @users = User.where.not(id: current_user&.id)
     @tweet = Tweet.new
     @q = Tweet.ransack(params[:q]) #los resultados serán procesados por ransack
-    @tweets = @q.result(distinct: true).order("created_at DESC").page(params[:page])
-    #con distinct: true elimina duplicados
-  
+    
+    if signed_in?
+      @tweets = Tweet.tweets_for_me(current_user).page(params[:page])
+    else
+      @tweets = Tweet.all.order("created_at DESC").page(params[:page])
+    end
+
+    if params[:tweetsearch].present?
+      @tweets = Tweet.search_my_tweets(params[:tweetsearch]).page(params[:page]).order("created_at DESC")
+    elsif params[:hashtag].present?
+      @tweets = Tweet.search_my_tweets("##{params[:hashtag]}").page(params[:page]).order("created_at DESC")
+    else
+      @tweets = Tweet.all.page(params[:page]).order("created_at DESC")
+    end
   end
 
   # GET /tweets/1 or /tweets/1.json
@@ -17,9 +29,14 @@ class TweetsController < ApplicationController
   
   # GET /tweets/new
   def new
+    if user_signed_in?
     @tweet = Tweet.new
-    @tweet = current_user.tweets.build
+    else
+    redirect_to new_user_session_path
+    end
+    
   end
+    #@tweet = current_user.tweets.build
 
   # GET /tweets/1/edit
   def edit
@@ -28,7 +45,7 @@ class TweetsController < ApplicationController
   # POST /tweets or /tweets.json
   def create
     @tweet = Tweet.new(tweet_params.merge(user: current_user))
-    @tweet = current_user.tweets.build(tweet_params)
+    #@tweet = current_user.tweets.build(tweet_params)
 
     respond_to do |format|
       if @tweet.save
