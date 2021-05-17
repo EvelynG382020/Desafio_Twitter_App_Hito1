@@ -14,6 +14,8 @@ Rails.application.routes.draw do
   #   resources :friends
   # end
 
+  get '/:hashtag', to: 'tweets#hashtag_search', as: 'hashtag'
+
   devise_for :users, controllers: {
     registrations: 'users/registrations',
     sessions: 'users/sessions'
