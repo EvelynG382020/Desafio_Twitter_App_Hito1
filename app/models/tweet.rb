@@ -23,4 +23,6 @@ class Tweet < ApplicationRecord
         self.where(id: my_tweet_id_array)
     end
 
+    
+
 end

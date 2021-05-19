@@ -1,24 +1,23 @@
 <!--Modificar la página principal para que, si el usuario ha iniciado sesión, se muestren únicamente los tweets de las personas que sigue-->
 
-<!-- Verificamos que el usuario este logeado para poder crear tweets y seguir amigos -->
 <% if user_signed_in? %>
 
   <div class="container">
-
-    
-    <!--listado de usuarios-->
+    <!--iterar usuarios-->
     <% @users.each do |user|%>
       <% if !pre_follow(user)%>
-          <p>Seguir a <%= user.user_name %></p>
-          <img src="<%= user.user_photo %>" width="60" height="60" class="rounded-circle mb-2"> 
-            <%= link_to follow_user_path(user.id), method: :post do %> 
-            <i class="fas fa-user-plus fa-sm"></i><% end %> 
+          
+          <img src="<%= user.user_photo %>" width="60" height="60" class="rounded-circle mb-2">  
+          <%= link_to follow_user_path(user.id), method: :post do %> 
+         | <p>Seguir a <%= user.user_name %>  <i class="fas fa-user-plus fa-sm"></i><% end %></p>
+        
         <% else %>
-          <p>Dejar de seguir a <%= user.user_name %></p>
-          <%= link_to unfollow_user_path(user.id), method: :post do %>
-          <i class="fas fa-user-minus fa-sm"></i> <% end %> 
-      <% end %>
-    <% end %> 
+          
+          <%= link_to unfollow_user_path(user.id), method: :delete do %>
+         | <p>Dejar de seguir a <%= user.user_name %>  <i class="fas fa-user-minus fa-sm"></i><% end %></p>
+          <p>Tweets <%= user.tweets.count %></p>
+      <% end %>  
+    <% end %>
   </div>
   <%= render 'form', tweet: @tweet %>
 <%end %>    

@@ -3,10 +3,9 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
 
   resources :tweets do 
-    #post :follower #es el metodo creado en tweet controller para poder crear el seguir friend
     resources :likes 
     member do
-      post :retweet #es el metodo creado en tweet controller para dar la acción 
+      post 'retweet' #es el metodo creado en tweet controller para dar la acción 
     end
   end
 
@@ -26,9 +25,13 @@ Rails.application.routes.draw do
     delete 'follow/:id', to: 'friends#unfollow', as: 'unfollow_user'
   
     end
+
+    get '/api/news', to: 'tweets#index'
+    get "/api/:date1/:date2", to: 'tweets#between_dates'
+    post '/api/create', to: 'tweets#create'
     
 
   
-  root "tweets#index"
+    root "tweets#index"
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

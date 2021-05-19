@@ -10,13 +10,13 @@ class FriendsController < ApplicationController
         @followed = User.find(params[:id])
         @friend = Friend.new(user_id: current_user.id, friend_id: @followed.id)
         @friend.save
-        redirect_to root_path, notice: "Ahora sigues a #{@followed.user_name}"
+        redirect_to root_path
     end
+
     def unfollow
-        
         friend = Friend.find_by(friend_id: params[:id], user_id: current_user)
         friend.destroy 
-        redirect_to root_path, notice: "Ya no sigues a este usuario"
+        redirect_to root_path
         
     end
 
