@@ -1,6 +1,9 @@
 class TweetsController < ApplicationController
-  before_action :set_tweet, only: %i[ show edit update destroy retweet ]
-  http_basic_authenticate_with name: "tweeter", password: "prueba"
+  before_action :set_tweet, only: [:show, :edit, :update, :destroy, :retweet] 
+  skip_before_action :verify_authenticity_token 
+  
+ 
+  
 
   # GET /tweets or /tweets.json
   def index
@@ -19,20 +22,11 @@ class TweetsController < ApplicationController
     elsif params[:hashtag].present?
       @tweets = Tweet.search_my_tweets("##{params[:hashtag]}").page(params[:page]).order("created_at DESC")
     
-      #@tweets = Tweet.all.page(params[:page]).order("created_at DESC")
+      
     end
-
-    @tweets = Tweet.all.order("created_at DESC").limit(50)
-    render json: @tweets
+   
   end
-
-  def between_dates
-    first_date = params[:date1]
-    last_date = params[:date2]
-    @tweets = Tweet.where(:created_at => first_date..last_date)
-    render json: @tweets
-  end
-
+ 
   # GET /tweets/1 or /tweets/1.json
   def show
     
@@ -55,20 +49,18 @@ class TweetsController < ApplicationController
 
   # POST /tweets or /tweets.json
   def create
-    if request.headers['X-API'].present? && User.find_by(api_id: request.headers['X-API']) 
-      @tweet = Tweet.new(tweet_params.merge(user: current_user))
-    
-      respond_to do |format|
-        if @tweet.save
-          format.html { redirect_to root_path, notice: "Tweet was successfully created." }
-          format.json { render json: @tweet, status: :created, location: @tweet }
-          
-        else
-          format.html { render :new, status: :unprocessable_entity }
-          format.json { render json: @tweet.errors, status: :unprocessable_entity }
-        end
+    @tweet = Tweet.new(tweet_params.merge(user: current_user))
+  
+    respond_to do |format|
+      if @tweet.save
+        format.html { redirect_to root_path, notice: "Tweet was successfully created." }
+        format.json { render json: @tweet, status: :created, location: @tweet }
+        
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @tweet.errors, status: :unprocessable_entity }
       end
-    end  
+    end
   end
 
   # PATCH/PUT /tweets/1 or /tweets/1.json
@@ -119,6 +111,6 @@ class TweetsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def tweet_params
-      params.require(:tweet).permit(:content, :user_id, :retweet)
+      params.require(:tweet).permit(:content, :user_id, :retweet, :rt_ref)
     end
 end

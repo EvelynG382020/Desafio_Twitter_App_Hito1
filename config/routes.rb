@@ -20,18 +20,18 @@ Rails.application.routes.draw do
     sessions: 'users/sessions'
     } 
 
-    devise_scope :user do
-      post 'follow/:id', to: 'friends#follow', as: 'follow_user'
-    delete 'follow/:id', to: 'friends#unfollow', as: 'unfollow_user'
-  
-    end
+  devise_scope :user do
+    post 'follow/:id', to: 'friends#follow', as: 'follow_user'
+  delete 'follow/:id', to: 'friends#unfollow', as: 'unfollow_user'
 
-    get '/api/news', to: 'tweets#index'
-    get "/api/:date1/:date2", to: 'tweets#between_dates'
-    post '/api/create', to: 'tweets#create'
+  end
+
+  get '/api/news', to: 'api#index'
+  get "/api/:date1/:date2", to: 'api#between_dates'
+  post '/api/create', to: 'api#create_api_tweet'
     
 
   
-    root "tweets#index"
+  root "tweets#index"
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

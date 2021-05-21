@@ -1,31 +1,109 @@
-<!--Modificar la página principal para que, si el usuario ha iniciado sesión, se muestren únicamente los tweets de las personas que sigue-->
 
 <% if user_signed_in? %>
-
-  <div class="container">
-    <!--iterar usuarios-->
-    <% @users.each do |user|%>
-      <% if !pre_follow(user)%>
-          
-          <img src="<%= user.user_photo %>" width="60" height="60" class="rounded-circle mb-2">  
-          <%= link_to follow_user_path(user.id), method: :post do %> 
-         | <p>Seguir a <%= user.user_name %>  <i class="fas fa-user-plus fa-sm"></i><% end %></p>
-        
-        <% else %>
-          
-          <%= link_to unfollow_user_path(user.id), method: :delete do %>
-         | <p>Dejar de seguir a <%= user.user_name %>  <i class="fas fa-user-minus fa-sm"></i><% end %></p>
-          <p>Tweets <%= user.tweets.count %></p>
-      <% end %>  
-    <% end %>
-  </div>
   <%= render 'form', tweet: @tweet %>
-<%end %>    
+<% end %>
 
-  <div class="mx-1">
-      <%= render 'shared/tweets', tweet: @tweet %>
-  </div>
-  <br>
+<div class="card text-center mx-auto col-md-6 mb-3 bg-light">
+    <h3>Amigos??!!</h3>
+    <div class="col-med-12">
+        <div class="card-body">
+            <% if  user_signed_in? %>
+                <% @users.each do |user| %>
+                    <% if pre_follow(user)%>
+                        <%= link_to unfollow_user_path(user.id), method: :delete do %>
+                        <img src="<%= user.user_photo %>" width="60" height="60" class="round-circle mb-2" > <%= user.user_name %>  <i class="fas fa-user-minus fa-sm"></i><% end %>
+                    <% else %>
+                        <%= link_to follow_user_path(user.id), method: :post do %>
+                        <img src="<%= user.user_photo %>" width="60" height="60" class="round-circle mb-2" > <%= user.user_name %>  <i class="fas fa-user-plus fa-sm"></i><% end %>
+                    <% end %>
+                <% end %>    
+            <% end %>
+        </div>
+    </div>
+</div>
+<% @tweets.each do |tweet| %>
+<!--<div class="card mt-1 mb-4 col-md-6 mx-auto">-->
+<div class="card text-center mx-auto col-md-6 mb-3 bg-light">
+    <div class="col-med-12">
+        <div class="card-body">
+            <h4 class="card-title"><%= tweet.user.user_name %></h4>
+                <!--<% if  user_signed_in? %>
+                    <% @users.each do |user| %>
+                        <% if pre_follow(tweet.user)%>
+                            <%= link_to "Dejar de seguir", unfollow_user_path(tweet.user_id), method: :delete %>
+                            <i class="fas fa-user-minus fa-sm"></i> 
+                        <% else %>
+                            <%= link_to "Seguir", follow_user_path(tweet.user_id), method: :post do %>
+                            <i class="fas fa-user-plus fa-sm"></i>
+                            <% end %>  
+                        <% end %>
+                    <% end %>    
+                <% end %>-->
+            <img src="<%= tweet.user&.user_photo %>" width="60" height="60" class="round-circle mb-2" >
+            <div class="container-4">
+                <p>
+                    <% content_tweet_array = tweet.content.split%>
+                    <% content_tweet_array.each do |element|%>
+                        <% if element.start_with?("#") %>
+                            <% element.slice!(0) %>
+                            <a href="?hashtag=<%= element %>">#<%= element %></a>
+                        <% else %>
+                        <%= element %>
+                        <% end %>
+                    <% end %>  
+                </p>  
+            </div>
+            <% if user_signed_in? %>
+                <% if tweet.user_id == current_user.id %>
+                    <%= link_to 'Edit', edit_tweet_path(tweet) %></td>
+                <% end %>
+            <% end %>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <p class="card-text">
+                        <% if signed_in? %> <!--se ha iniciado sesión-->
+                            <% if like(tweet, current_user) %> <!--y si el like del ususario actual del tweet-->
+                                <%= link_to tweet_like_path(tweet,like(tweet, current_user)), method: :delete do %>
+                                <i class="fas fa-thumbs-up fa-2x"></i> <!--se elimina porque este usuario no puede hacer like en el mismo tweet-->
+                            <% end %>
+                            <% else  %> <!--sino-->
+                                <%= link_to tweet_likes_path(tweet), method: :post do %> <!--crear el like se busca la ruta-->
+                                    <i class="far fa-thumbs-up fa-2x"></i> <!--mostarlo con un icono-->
+                                <% end %>
+                            <% end %>
+                            <!--se cuentan los like usando un count sobre la tabla like del tweet-->
+                            | <%= tweet.likes.count %> <%= (tweet.likes.count) == 1 ? 'Like' : 'Likes'%> |
+                            <!--se crea un retweet se busca la ruta y le paso el objeto-->
+                            <%= link_to retweet_tweet_path(tweet), data: { confirm: 'do you want to retweet'}, method: :post do %>
+                                <i class="fas fa-feather-alt fa-2x"></i>
+                            <% end %>
+                            <!--se muestra el rt del tweet-->
+                            |<%= tweet.retweet %> RT
+                            <% else %>
+                            <%= tweet.likes.count %> <%= (tweet.likes.count) == 1 ? 'Like' : 'Likes'%> | <%= tweet.retweet %> RT
+                        <% end %>
+                    </p>  
+                    <p class="card-text">
+                        <small class="text-muted"> <!--un link para mostrar la fecha transcurrido del tweet creado-->
+                            <%= link_to time_ago_in_words(tweet.created_at),tweet %> |
+                            <% if !tweet.rt_ref.nil? %> <!--si el campo rt_ref del tweet es nulo-->
+                            <!--se crea un link donde se interpola el nombre de usuario del usario del tweet para indicar que ha retweet y le paso el metodo al tweet-->
+                            <%= link_to "#{tweet.user.user_name} ha retwee...", tweet.retweet_ref  %> |
+                            <% end %>
+                            <% if signed_in? && tweet.user == current_user %> <!--y si el usuario actual es igual al usuario del tweeter se elimina-->
+                                <%= link_to 'Destroy', tweet, method: :delete, data: { confirm: 'Are you sure?' }, class: "badge bg-primary" %> |
+                            <% end %>
+                        </small>
+                    </p>
+                </div>
+            </div>
+        </div>  
+    </div>
+</div>
+<% end %>
+ 
+
+<%= paginate @tweets  %>
 
 <!-- paginamos los tweets -->
 <div class="container mx-auto">
