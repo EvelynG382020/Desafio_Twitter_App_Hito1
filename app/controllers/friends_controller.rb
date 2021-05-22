@@ -5,6 +5,10 @@ class FriendsController < ApplicationController
         @friend = Friend.create(user_id: current_user.id, friend_id: params[:user_id])
         redirect_to root_path
     end
+
+    def show
+        @friends = Friend.all
+    end
     
     def follow
         @followed = User.find(params[:id])

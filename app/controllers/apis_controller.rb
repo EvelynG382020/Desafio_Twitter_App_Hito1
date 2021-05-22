@@ -1,4 +1,4 @@
-class ApiController < ApplicationController
+class ApisController < ApplicationController
     include ActionController::HttpAuthentication::Basic::ControllerMethods
     #before_action :verify_authenticity_token, only:[:create_api_tweet]    
     before_action :set_tweet, only: [:show, :update, :destroy]
@@ -22,8 +22,7 @@ class ApiController < ApplicationController
     end
 
     def create_api_tweet
-        @tweet = Tweet.new(content: params[:content])
-        @tweeet = Tweet.new(content: request.headers["X-CONTENT"], user: @user) 
+        @tweet = Tweet.new(content: params[:content], user_id: params[:user_id])
        
         if @tweet.save
           render json: @tweet, status: :created
@@ -42,8 +41,8 @@ class ApiController < ApplicationController
         @tweet = Tweet.find(params[:id])
       end
 
-      def user_tweet
-        params.require(:tweet).permit(:email, :password, :user_name, :tweet, :likes )
+      def tweet_params
+        params.require(:tweet).permit(:content, :user_id)
       end
 
     

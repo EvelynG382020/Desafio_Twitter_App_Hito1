@@ -26,9 +26,9 @@ Rails.application.routes.draw do
 
   end
 
-  get '/api/news', to: 'api#index'
-  get "/api/:date1/:date2", to: 'api#between_dates'
-  post '/api/create', to: 'api#create_api_tweet'
+  get '/api/news', to: 'apis#index'
+  get "/api/:date1/:date2", to: 'apis#between_dates'
+  post '/api/create', to: 'apis#create_api_tweet'
     
 
   
