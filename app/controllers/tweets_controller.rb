@@ -9,7 +9,6 @@ class TweetsController < ApplicationController
   def index
     @users = User.where.not(id: current_user&.id)
     @tweet = Tweet.new
-<<<<<<< HEAD
     @q = Tweet.ransack(params[:q]) #los resultados serán procesados por ransack
     
     if signed_in?
@@ -17,19 +16,6 @@ class TweetsController < ApplicationController
     else
       @tweets = Tweet.all.order("created_at DESC").page(params[:page])
     end
-=======
-    @tweets = Tweet.all.order("created_at DESC").page(params[:page])
-    
-    if params[:q]
-      @tweets = Tweet.where("content LIKE ?", "%#{params[:q]}%").order(created_at: :desc).page(params[:page])
-      elsif current_user.nil?
-        @tweets = Tweet.order(created_at: :desc).page(params[:page])
-      else
-      @tweets = Tweet.tweets_for_me(current_user.friends).or(Tweet.where("user_id = ?", current_user.id)).order(created_at: :desc).page(params[:page])
-    end
-
-  end
->>>>>>> 16e11cf7e9e35eef6cdbc647c854ad091c1bb60b
 
     if params[:tweetsearch].present?
       @tweets = Tweet.search_my_tweets(params[:tweetsearch]).page(params[:page]).order("created_at DESC")

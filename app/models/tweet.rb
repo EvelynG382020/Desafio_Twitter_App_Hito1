@@ -12,7 +12,6 @@ class Tweet < ApplicationRecord
         Tweet.find(self.rt_ref)
     end
 
-<<<<<<< HEAD
     def self.search_my_tweets(x)
         @my_tweets = Tweet.all
         my_tweet_id_array = []
@@ -23,13 +22,4 @@ class Tweet < ApplicationRecord
         end
         self.where(id: my_tweet_id_array)
     end
-=======
-
-    scope :tweets_for_me, ->(users_list) { where(
-        user_id: users_list.map do |friend|
-            friend.friend_id 
-        end
-    ) }
-
->>>>>>> 16e11cf7e9e35eef6cdbc647c854ad091c1bb60b
 end
