@@ -1,4 +1,4 @@
-
+https://aqueous-spire-33107.herokuapp.com/
 
 Gem ActiveAdmin Se deberá crear un panel de control utilizando ActiveAdmin que liste todos los usuarios y pueda editarlos, cada usuario aparecerá junto al número de cuentas que sigue, cantidad de tweets realizados, cantidad de likes dados y la cantidad de retweets. Además deberán aparecer las acciones de borrar y editar, donde borrar un usuario implica borrar en cascada todos sus tweets, likes y retweets. email eka2021@gmail.com y password eka2021.
 Al iniciar sesión en Twitter solo se debe ver los tweets de las personas que sigo. Si no los sigo, no veo sus tweet, pero me aparecen en el Card todos los usuarios por si quiero comenzar a seguirlos.
