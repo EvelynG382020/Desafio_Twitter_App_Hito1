@@ -1,5 +1,6 @@
 class AddApiToUser < ActiveRecord::Migration[5.2]
-  def change
-    add_reference :users, :api, foreign_key: true
+  def down
+    remove_foreign_key :users, :api
   end
+  
 end
